@@ -1,0 +1,22 @@
+1- modo de fazer parse nas string para fazer as operações na order certa
+2- funcao de ver se existe execução sequencial sequencial
+3- funcao para ver se existe função de escolha n deterministica
+4- funcao para ver se exsite iteração não determinística
+5- maneira de combinar as execuções por meio de higher level functions
+
+
+* Marcello
+
+- criar funcoes de transformar entrada de pdl (em notação pré-fixada) em lista
+
+entrada: (U (; a b) (; c d) )
+
+saída: execução na seguinte ordem (conferir ordem usandi prints): 
+1- [c, d] com funcao de execução senquencial
+2- [a, b] com funcao de execução sequencial
+3- [a, b] e [c, d] com funcao de escolha nao deterministica
+
+
+* Martello
+
+- maneira de combinar as execuções por meio de higher level functions
