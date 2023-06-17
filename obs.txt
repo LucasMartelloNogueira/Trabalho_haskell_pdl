@@ -1,0 +1,22 @@
+*** usando indices para acessar elementos em listas ***
+
+- usar: !!
+
+- ex: 
+    let lista = [1, 2, 3] 
+    let i = 0
+    print(lista !! i) -- vai printar 1
+
+----------------------------------------------------
+
+*** como concatenar strings e listas ***
+
+- usar: ++
+
+- ex1:
+    let a = "ab" ++ "cd"
+    print(a) -- vai printar "abcd"
+
+- ex2: 
+    let b = [1, 2] ++ [3, 4]
+    print(b) -- vai printar [1, 2, 3, 4]
