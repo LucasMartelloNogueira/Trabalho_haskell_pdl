@@ -19,4 +19,5 @@ saída: execução na seguinte ordem (conferir ordem usandi prints):
 
 * Martello
 
+- printar pontos de incompatibilidade
 - maneira de combinar as execuções por meio de higher level functions

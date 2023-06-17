@@ -70,14 +70,33 @@ temEscolhaNaoDet [] _ _ = False
 temEscolhaNaoDet arestas vertice rotulos = or [elem rot rotulos | (v1, v2, rot) <- getDifRotas arestas vertice]
 
 
--- TODO: implementar funcao de loop
--- funcao que verifica existencia de um loop no grafico
+-- funcao auxiliar que verifica existencia de um loop no grafico
 -- arg 1: arestas do grafo
 -- arg 2: vertice testado
 -- arg 3: rotulo (programa) testado (ex: alfa)
-temIteracaoNaoDet :: [(String, String, String)] -> String -> String -> Bool
-temIteracaoNaoDet [] _ _ = True -- caso em que não executa nenhuma vez
-temIteracaoNaoDet arestas vertice rotulo =
-    let soRotasDiferentes = or [rot /= rotulo |(v1, v2, rot) <- getDifRotas arestas vertice]
+-- arg 4: profundiade do caminho achado
+-- retorno: numero de vezes que rotulo ocorre, podendo ser:
+--      -1: o vertice testado tem outras arestas mas não com o rotulo testado
+--       0: não tem arestas saindo do vertice
+--       n: numero do maior cominho com o rotulo desejado
+temIteracaoNaoDetAux :: [(String, String, String)] -> String -> String ->Int -> Int
+temIteracaoNaoDetAux [] _ _ profundidade = profundidade -- caso em que não tem arestas o grafo
+temIteracaoNaoDetAux arestas vertice rotulo profundidade =
+    let rotas =  [(v1, v2, rot) | (v1, v2, rot) <- getRotas arestas rotulo vertice]
     in
-        soRotasDiferentes || or [temIteracaoNaoDet arestas v2 rotulo | (v1, v2, rot) <- getRotas arestas rotulo vertice]
+        if length rotas == 0 then -1 * (profundidade+1)
+        else
+           2 + maximum [temIteracaoNaoDetAux arestas v2 rotulo (profundidade+1) | (v1, v2, rot) <- getRotas arestas rotulo vertice]
+
+
+auxRes :: Int -> Int
+auxRes x
+    | x == -1 = x
+    | otherwise = x + 1
+
+temIteracaoNaoDet :: [(String, String, String)] -> String -> String -> Int
+temIteracaoNaoDet [] _ _ = 0
+temIteracaoNaoDet arestas vertice rotulo = auxRes (temIteracaoNaoDetAux arestas vertice rotulo 0)
+    
+
+    
