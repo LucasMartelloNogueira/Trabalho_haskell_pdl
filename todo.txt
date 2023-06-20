@@ -7,14 +7,7 @@
 
 * Marcello
 
-- criar funcoes de transformar entrada de pdl (em notação pré-fixada) em lista
-
-entrada: (U (; a b) (; c d) )
-
-saída: execução na seguinte ordem (conferir ordem usandi prints): 
-1- [c, d] com funcao de execução senquencial
-2- [a, b] com funcao de execução sequencial
-3- [a, b] e [c, d] com funcao de escolha nao deterministica
+- (x?;alfa -x?;Beta) -> notação pre fixada -> U(alfa beta)
 
 
 * Martello

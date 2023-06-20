@@ -13,5 +13,46 @@ removeChars (ch:chs) str =
 -- realiza o slicing de strings
 -- obs: limite inferior e superior inclusos
 slice :: Int -> Int -> [a] -> [a]
-slice from to xs = take (to - from + 1) (drop from xs)
+slice from to xs
+    | (from > to) = []
+    | otherwise = take (to - from + 1) (drop from xs)
+
+
+indexDoSplit :: String -> Int
+indexDoSplit str = indexDoSplitAux str 0 0
+
+
+indexDoSplitAux :: String -> Int -> Int -> Int
+indexDoSplitAux [] _ _ = 0
+indexDoSplitAux (x:xs) ca cf
+    |(ca == cf) && x == ' ' = 0
+    |x == '(' = 1 + indexDoSplitAux xs (ca+1) cf 
+    |x == ')' = 1 + indexDoSplitAux xs ca (cf+1)
+    |otherwise = 1 + indexDoSplitAux xs ca cf
+
+parseExeSeq :: String -> [String]
+parseExeSeq [] = []
+parseExeSeq str = 
+    let 
+        proxIndex = indexDoSplit str
+        operando = slice 0 (proxIndex-1) str
+        len = length str
+        resto = slice (proxIndex+1) (len-1) str
+    in
+        if (resto /= []) then
+            [operando] ++ parseExeSeq resto
+        else
+            [operando]
+
+parseUniao :: String -> [String]
+parseUniao [] = []
+parseUniao str = 
+    let 
+        index = indexDoSplit str
+        operando1 = slice 0 (index-1) str
+        len = length str
+        operando2 = slice (index+1) (len-1) str
+    in
+        [operando1, operando2]
+
 

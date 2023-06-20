@@ -27,7 +27,7 @@ getArestasComRotulo :: [(String, String, String)] -> String -> [(String, String,
 getArestasComRotulo [] _ = []
 getArestasComRotulo arestas rotulo = [(v1, v2, rot) | (v1, v2, rot) <- arestas, rot == rotulo]
 
--- pega todas as arestas com detesrminado rotulo a partir de um vertice de origem
+-- pega todas as arestas com determinado rotulo a partir de um vertice de origem
 -- arg 1: lista de arestas do grafo
 -- arg 2: rotulo testado
 -- arg 3: vertice testado
@@ -36,14 +36,33 @@ getRotas [] _ _ = []
 getRotas arestas rotulo vertice = filter (\(v1, v2, rot) -> v1 == vertice && rot == rotulo) arestas
 
 
+-- pega todas as arestas com determinado rotulo
+getRelacoes :: [(String, String, String)] -> String -> [(String, String, String)]
+getRelacoes [] _ = []
+getRelacoes arestas rotulo = [(v1, v2, rot) | (v1, v2, rot) <- arestas, rot == rotulo]
+
+
+-- funcao que confere se tem caminho entre dois vertices
+temCaminho :: [(String, String, String)] -> String -> String -> Bool
+temCaminho [] v1 v2 = v1 == v2
+temCaminho arestas v1 v2 = 
+    let arestasV1 = getDifRotas arestas v1
+    in
+        or [(v1 == va) && (v2 == vb) | (va, vb, rot) <- arestasV1] || or [temCaminho arestas vTemp v2 | (vTemp, v2, rot) <- arestasV1]
+
+
+-- getRelacoesTransitivas :: [(String, String, String)] -> [(String, String, String)] -> [(String, String, String)]
+-- getRelacoesTransitivas r1 r2 = [(v1, v3, rot) | ]
+
+
 -- funcao para verificar execucao sequecial de um programa pdl (ex: alfa;beta)
 -- arg 1: arestas do grafo
 -- arg 2: vertice que esta sendo atualmente testado
 -- arg 3: lista de rotulos das arestas (progamas, ex: alfa)
 -- retorno: bool se todas as arestas existem no programa
 temExeSequencial :: [(String, String, String)] -> String -> [String] -> Bool
-temExeSequencial [] _ _ = False -- TODO: testar se isso faz sentido (caso em que n tem arestas)
-temExeSequencial _ _ [] = True -- TODO: testar se isso faz sentido (caso em que n tem rotulos)
+temExeSequencial [] _ _ = False 
+temExeSequencial _ _ [] = True 
 temExeSequencial arestas vertice [rotulo] = or [v1 == vertice && rot == rotulo | (v1, v2, rot) <- getRotas arestas rotulo vertice]
 temExeSequencial arestas vertice (rotulo:rotulos) = 
     let rotas = getRotas arestas rotulo vertice
@@ -97,6 +116,39 @@ auxRes x
 temIteracaoNaoDet :: [(String, String, String)] -> String -> String -> Int
 temIteracaoNaoDet [] _ _ = 0
 temIteracaoNaoDet arestas vertice rotulo = auxRes (temIteracaoNaoDetAux arestas vertice rotulo 0)
-    
 
-    
+
+getRelacaoSemRotulo :: [(String, String, String)] -> [(String, String)]
+getRelacaoSemRotulo arestas = [(v1, v2) | (v1, v2, rot) <- arestas]
+
+-- EX: A ; B
+-- funcao que dado dois rotulos (progamas) gera uma nova lista de relacoes
+-- arg 1: conjunto de arestas de um rotulo
+-- arg 2: conjunto de arestas de um outro rotulo
+getNovasRelacoes :: [(String, String)] -> [(String, String)] -> [(String, String)]
+getNovasRelacoes rel1 rel2 = [(v1, v2) | (v1, vTemp1) <- rel1, (vTemp2, v2) <- rel2, vTemp1 == vTemp2]
+
+
+-- EX: A U B
+-- funcao que faz a uniao de duas relacoes
+getUniaoRelacoes :: [(String, String)] -> [(String, String)] -> [(String, String)]
+getUniaoRelacoes rel1 rel2 = [(v1, v2) | (v1, v2) <- (rel1 ++ rel2)]
+
+
+-- EX: A*
+-- funcao que dado uma relacao, gera a relacao de loop n deterministico
+getLoopRelacaoAux :: [(String, String)] -> [(String, String)] -> Bool -> [(String, String)]
+getLoopRelacaoAux [] _ _ = []
+getLoopRelacaoAux relNova relOriginal primeiro = 
+    let 
+        novaRel = getNovasRelacoes relNova relOriginal
+    in
+        if primeiro == True then
+            relOriginal ++ novaRel ++ getLoopRelacaoAux novaRel relOriginal False
+        else
+            novaRel ++ getLoopRelacaoAux novaRel relOriginal False
+
+
+getLoopRelacao :: [(String, String)] -> [(String, String)]
+getLoopRelacao [] = []
+getLoopRelacao rel = getLoopRelacaoAux rel rel True
