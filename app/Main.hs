@@ -4,10 +4,11 @@ import Grafo
 import Operacao
 import Data.List.Split
 import Utils
+import Text.Printf
 
 main ::IO()
 main = do
-    -- let g = Grafo {vertices = ["a", "b", "c", "d", "e"], arestas = [("a", "b", "alfa"), ("b", "c", "beta"), ("a", "d", "delta"), ("c", "e", "gama")]}
+    let g = Grafo {vertices = ["a", "b", "c", "d", "e"], arestas = [("a", "b", "alfa"), ("b", "c", "beta"), ("a", "d", "delta"), ("c", "e", "gama")]}
 
     -- ilustracao grafo         a -> (a, a) / (a, b) / (a, d)
     --          a
@@ -99,11 +100,22 @@ main = do
     -- print(length (getOperandos op))
 
     -- TESTE 4: "U(;(a b c) U(;(c d) ;(e f)))"
-    let pdl  = "U(;(a b c) U(;(c d) ;(e f)))"
-    let op = getOperacaoV2 pdl
-    print(getOperador op)
-    print(getOperandos op)
-    print(length (getOperandos op))
+    -- let pdl  = "U(;(a b c) U(;(c d) ;(e f)))"
+    -- let op = getOperacaoV2 pdl
+    -- print(getOperador op)
+    -- print(getOperandos op)
+    -- print(length (getOperandos op))
+
+
+    -- let pdl = "alfa"
+    let nome = "Lucas"
+    print("meu nome eh " ++ nome)
+    
+    -- let pdl = ";(alfa beta)"
+    -- let op = getOperacao pdl g
+    -- print(getSetResultante op)
+    -- print(getOperador op)
+    -- print(getOperandos op)
 
 
     -- let pdl = "a ;(f g) c d e"

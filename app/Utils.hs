@@ -55,4 +55,3 @@ parseUniao str =
     in
         [operando1, operando2]
 
-
