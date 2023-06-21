@@ -4,167 +4,103 @@ import Grafo
 import Operacao
 import Data.List.Split
 import Utils
-import Text.Printf
+import Executor
 
 main ::IO()
 main = do
-    let g = Grafo {vertices = ["a", "b", "c", "d", "e"], arestas = [("a", "b", "alfa"), ("b", "c", "beta"), ("a", "d", "delta"), ("c", "e", "gama")]}
+ 
+    let g = Grafo {
+        vertices = ["a", "b", "c", "d", "e"], 
+        arestas = [("a", "b", "alfa"), ("b", "c", "beta"), ("a", "d", "delta"), ("c", "e", "gama"), ("d", "f", "sigma")]
+    }
 
-    -- ilustracao grafo         a -> (a, a) / (a, b) / (a, d)
+    -- ilustracao grafo         
     --          a
-    --    sigma/ \ delta
+    --    alfa / \ delta
     --        b    d
     --  beta /     
     --      c
     --  gama \ 
     --        e
 
-    -- arestas do grafo
-    -- let arestasG = getArestas g
-    -- let ra = getRelacoes a "alfa"
 
-    -- pdl : U;ab;cd
-    -- let pdl = "a;b;c"
-    -- let sep = ';'
-    -- let newStr = sep : filter (\x -> x /= sep) pdl
-    -- print(newStr)
-    -- let pdl = "U;ab;cd"
-    -- let pdlRev = reverse pdl
-    -- print(pdlRev)
+    -- TESTE 1
+    let pdl1 = ";(a b)"
+    let op1 = getOperacao pdl1
+    print(getOperador op1)
+    print(getOperandos op1)
 
-    -- let isPath = temCaminho arestasG "e" "a"
-    -- print(isPath)
+    print("-----------------")
 
-    -- teste com execução sequencial (ex: vendo se tem no grafo a pdl: (alfa;beta;gama) )
-    -- let seq = ["alfa", "beta", "gama"]
-    -- let vertice = "a"
-    -- let teste = temExeSequencial arestas vertice seq
-    -- print(teste)
+    -- TESTE 2
+    let pdl2 = "U(;(a b) ;(c d))"
+    let op2 = getOperacao pdl2
+    print(getOperador op2)
+    print(getOperandos op2)
 
-    --  teste com execução de escolha não deterministica (ex: vendo se tem no grafo a pdl: alfa U delta)
-    -- let possiveis = ["beta", "gama"]
-    -- let vertice = "a"
-    -- let teste = temEscolhaNaoDet arestas vertice possiveis
-    -- print(teste)
+    print("-----------------")
 
-    -- teste com execucao de iteracao nao deterministica (ex: (alfa)*)
-    -- let rotulo = "alfa"
-    -- let vertice = "a"
-    -- let teste = temIteracaoNaoDet arestas vertice rotulo
-    -- let rotasDif =  [(v1, v2, rot) | (v1, v2, rot) <- (getDifRotas arestas vertice), rot/=rotulo]
-    -- print(teste)
+    -- TESTE 3
+    let pdl3 = "U(;(a b) U(;(c d ) ;(e f)))"
+    let op3 = getOperacao pdl3
+    print(getOperador op3)
+    print(getOperandos op3)
 
-    
-    -- teste com lista em Haskell
-    -- let x = splitOn ";" "(a;b)"
-    -- print(x)
+    print("-----------------")
 
-    -- let str = "(a;b)"
-    -- let chars = ['(', ')']
-    -- let char = '('
+    -- TESTE 4
+    let pdl4 = "*(a)"
+    let op4 = getOperacao pdl4
+    print(getOperador op4)
+    print(getOperandos op4)
 
-    -- let c = removeChar char str
-    -- print(c)
+    print("-----------------")
 
-    -- let d = removeChars chars str
-    -- print(d)
-    
-    -- let newStr = slice 2 ((length pdl) - 2) pdl
-    -- let list = endBy ") " newStr
-    -- print(list)
-    -- print(length list)
-    -- print(list)
+    -- Algumas funções interessantes
 
+    -- exemplos de execução sequencial
+    print("execucao sequencial")
+    -- exemplo de sucesso
+    let relacoes1 = ["alfa", "beta", "gama"]
+    let vertice1 = "a"
+    print(temExeSequencial (getArestas g) vertice1 relacoes1)
 
-    -- (x?;alfa -x?;Beta) -> notação pre fixada -> U(alfa beta)
+    -- exemplo de falha
+    let relacoes2 = ["alfa", "sigma"]
+    let vertice2 = "a"
+    print(temExeSequencial (getArestas g) vertice2 relacoes2)
 
-    -- TESTE 1: ";(a b)" 
-    -- let pdl  = ";(a b)"
-    -- let op = getOperacaoV2 pdl
-    -- print(getOperador op)
-    -- print(getOperandos op)
-    -- print(length (getOperandos op))
+    print("escolha n deterministica")
 
-    -- TESTE 2: ";(a ;(f g) c d e)"
-    -- let pdl  = ";(a ;(f g) c d e)"
-    -- let op = getOperacaoV2 pdl
-    -- print(getOperador op)
-    -- print(getOperandos op)
-    -- print(length (getOperandos op))
+    -- exemplos de escolha não determinística
+    -- exemplo de sucesso
+    let relacoes3 = ["alfa", "delta"]
+    let vertice3 = "a"
+    print(temEscolhaNaoDet (getArestas g) vertice3 relacoes3)
 
-    -- TESTE 3: "U(;(a b) ;(c d))"
-    -- let pdl  = "U(;(a b) ;(c d))"
-    -- let op = getOperacaoV2 pdl
-    -- print(getOperador op)
-    -- print(getOperandos op)
-    -- print(length (getOperandos op))
-
-    -- TESTE 4: "U(;(a b c) U(;(c d) ;(e f)))"
-    -- let pdl  = "U(;(a b c) U(;(c d) ;(e f)))"
-    -- let op = getOperacaoV2 pdl
-    -- print(getOperador op)
-    -- print(getOperandos op)
-    -- print(length (getOperandos op))
+    -- exemplo de falha
+    let relacoes4 = ["omega", "gama"]
+    let vertice4 = "a"
+    print(temEscolhaNaoDet (getArestas g) vertice4 relacoes4)
 
 
-    -- let pdl = "alfa"
-    let nome = "Lucas"
-    print("meu nome eh " ++ nome)
-    
-    -- let pdl = ";(alfa beta)"
-    -- let op = getOperacao pdl g
-    -- print(getSetResultante op)
-    -- print(getOperador op)
-    -- print(getOperandos op)
+    print("escolha loop nao deterministico")
 
+    -- exemplos de escolha não determinística
+    -- exemplo de sucesso
+    let relacao5 = "alfa"
+    let vertice5 = "a"
+    print(temIteracaoNaoDet (getArestas g) vertice5 relacao5)
 
-    -- let pdl = "a ;(f g) c d e"
-    -- let lista = parseExeSeq pdl
-    -- print(lista)
-    -- let pdl = ";(a b c) ;(e f g)"
-    -- print(parseUniao pdl)
-    -- let pdl = "U(;(a b c) U(;(c d) ;(e f)))"
-    -- let pdl = "U(;(a b c)) (U(;(c d)) (;(e f)))"  -- "(a;b;c) U ((c;d) U (e;f))"
-    -- let len = length pdl
-    -- let i = indexDoSplit pdl
-    -- let op1 = slice 1 (i-1) pdl
-    -- let op2 = slice (i+1) (len-1) pdl
-    -- print(op1)
-    -- print(op2)
-    -- let operacao = getOperacao pdl
-    -- print(getOperador operacao)
-    -- let operandos = getOperandos operacao
-    -- print(operandos)
-    -- print(length operandos)
-    -- print(isAtomica operacao)
-    -- let operandos = getOperandos operacao
-    -- let fixed = fixOperandos operandos
-    -- print(fixed)
-    -- print(length fixed)
+    -- exemplo de falha
+    let relacao6 = "ro"
+    let vertice6 = "a"
+    print(temIteracaoNaoDet (getArestas g) vertice6 relacao6)
 
-    -- let arestasG = getArestas g
-    -- let relacoesAlfa = getRelacoes arestasG "alfa"
-    -- print(relacoesAlfa)
-    -- let relacoesBeta = getRelacoes arestasG "beta"
-    -- print(relacoesBeta)
-    -- let relacoesNovas = getNovasRelacoes relacoesAlfa relacoesBeta
-    -- print(relacoesNovas)
-
-    -- let relA = [("a", "b"), ("b", "c"), ("c", "d")]
-    -- let nova = getLoopRelacao relA
-    -- print(nova)
-
+    -- OUTRAS FUNÇÕES INTERESSANTES
+    print("funcao se existe caminho")
+    print(temCaminho (getArestas g) "a" "e")
     
 
-
-    -- Testes com novo modelo: Operacao
-
-    -- let operacao1 = Operacao {operador = ";", operandos = ["a", "b"]}
-    -- print(getOperador operacao1)
-    -- print(getOperandos operacao1)
-    -- print(isAtomica operacao1)
-
-    -- let operacao2 = Operacao {operador = ";", operandos = ["(a;b)", "(c;d)"]}
-    -- print (getOperador operacao2)
-    -- print (getOperandos operacao2)
-    -- print (isAtomica operacao2)
+    
+    

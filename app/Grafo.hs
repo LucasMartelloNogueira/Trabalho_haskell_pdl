@@ -1,5 +1,7 @@
 module Grafo where
 
+import Utils
+
 data Grafo = Grafo {
     vertices :: [String],
     arestas :: [(String, String, String)]
@@ -37,9 +39,15 @@ getRotas arestas rotulo vertice = filter (\(v1, v2, rot) -> v1 == vertice && rot
 
 
 -- pega todas as arestas com determinado rotulo
+-- arg 1: arestas
+-- arg 2: rotulo
 getRelacoes :: [(String, String, String)] -> String -> [(String, String, String)]
 getRelacoes [] _ = []
 getRelacoes arestas rotulo = [(v1, v2, rot) | (v1, v2, rot) <- arestas, rot == rotulo]
+
+getRelacoesBinarias :: [(String, String, String)] -> String -> [(String, String)]
+getRelacoesBinarias [] _ = []
+getRelacoesBinarias arestas rotulo = [(v1, v2) | (v1, v2, rot) <- getRelacoes arestas rotulo]
 
 
 -- funcao que confere se tem caminho entre dois vertices
@@ -126,7 +134,25 @@ getRelacaoSemRotulo arestas = [(v1, v2) | (v1, v2, rot) <- arestas]
 -- arg 1: conjunto de arestas de um rotulo
 -- arg 2: conjunto de arestas de um outro rotulo
 getNovasRelacoes :: [(String, String)] -> [(String, String)] -> [(String, String)]
+-- getNovasRelacoes rel1 [] = rel1
+-- getNovasrelacoes [] rel2 = rel2
 getNovasRelacoes rel1 rel2 = [(v1, v2) | (v1, vTemp1) <- rel1, (vTemp2, v2) <- rel2, vTemp1 == vTemp2]
+
+
+
+-- funcao que executa sequencialmente todas os rotulos do prog
+-- arg 1: lista de rotulos (relacoes, ex: "alfa" "beta" "gama")
+-- arg 2: arestas do grafo
+getExeSequencial :: [String] -> [(String, String, String)] -> [(String, String)]
+getExeSequencial [] _ = []
+getExeSequencial [x] arestas = [(v1, v2) | (v1, v2, rot) <- getRelacoes arestas x]
+getExeSequencial (x:y:resto) arestas = 
+    let
+        relacoesX = [(v1, v2) | (v1, v2, rot) <- getRelacoes arestas x]
+        relacoesY = [(v1, v2) | (v1, v2, rot) <- getRelacoes arestas y]
+        novasRelacoes = getNovasRelacoes relacoesX relacoesY
+    in
+        getNovasRelacoes novasRelacoes (getExeSequencial resto arestas)
 
 
 -- EX: A U B
@@ -152,3 +178,12 @@ getLoopRelacaoAux relNova relOriginal primeiro =
 getLoopRelacao :: [(String, String)] -> [(String, String)]
 getLoopRelacao [] = []
 getLoopRelacao rel = getLoopRelacaoAux rel rel True
+
+
+getCaminhos :: Grafo -> String -> [String] -> [[String]]
+getCaminhos grafo vertice listaCaminhos
+    | proxCaminhos == [] = [listaCaminhos]
+    | otherwise = concatMap (\(v1, v2, rot) -> getCaminhos grafo v2 (listaCaminhos ++ [rot])) proxCaminhos
+    where
+        proxCaminhos = [(v1, v2, rot) | (v1, v2, rot) <- getDifRotas (getArestas grafo) vertice]
+    

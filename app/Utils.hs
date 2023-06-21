@@ -1,5 +1,7 @@
 module Utils where
 
+import Data.List 
+
 removeChar :: Char -> String -> String
 removeChar char str = filter (\i -> i /= char) str
 
@@ -55,3 +57,29 @@ parseUniao str =
     in
         [operando1, operando2]
 
+
+
+uniaoSet :: (Eq a) => [a] -> [a] -> [a]
+uniaoSet x [] = x
+uniaoSet [] y = y
+uniaoSet [] [] = []
+uniaoSet z (x:xs)
+    | elem x z == True = uniaoSet z xs
+    | otherwise = uniaoSet (x:z) xs
+
+
+getUniaoMatrizEmSet :: (Eq a) => [[a]] -> [a]
+getUniaoMatrizEmSet [] = []
+getUniaoMatrizEmSet [x] = x
+getUniaoMatrizEmSet (x:y:matriz)
+    | y == [] = uniaoSet x y
+    | otherwise = uniaoSet (uniaoSet x y) (getUniaoMatrizEmSet matriz)
+
+
+
+addItemMatrix :: (Eq a) => a -> [[a]] -> [[a]]
+addItemMatrix item matrix = [[item] ++ lista | lista <- matrix]
+
+
+listaParaStr :: [String] -> String
+listaParaStr = concat . intersperse " "

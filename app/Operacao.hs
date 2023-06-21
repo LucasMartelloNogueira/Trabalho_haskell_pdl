@@ -56,24 +56,20 @@ getOperacaoComposta str =
 -- nesse caso, seria só um rótulo, ex: alfa
 -- não teria operador e nem operandos
 -- só teria o conjunto de arestas do grafo com aquele rotulo
-getOperacaoBase :: String -> Grafo -> Operacao
-getOperacaoBase str grafo = 
-    let
-        arestas = [(v1, v2) | (v1, v2, rot) <- getArestas grafo, rot == str]
-    in
-        Operacao {operador = "", operandos = [], valido = True, divergencias = [], setResultante = arestas}
+getOperacaoBase :: String -> Operacao
+getOperacaoBase str = Operacao {operador = "", operandos = [str], valido = True, divergencias = [], setResultante = []}
 
 
 
-getOperacao :: String -> Grafo -> Operacao
-getOperacao pdl grafo = 
+getOperacao :: String -> Operacao
+getOperacao pdl = 
     let
         temParenteses = (elem '(' pdl) || (elem ')' pdl)
     in
         if temParenteses == True then
             getOperacaoComposta pdl
         else
-            getOperacaoBase pdl grafo
+            getOperacaoBase pdl
 
 
 -- funcao auxiliar para consertar formatacao de operandos na lista
@@ -109,8 +105,36 @@ getSetResultante Operacao {setResultante = set} = set
 -- arg 1 : Operacao
 -- retorno : True se todos os operandos da operacao sao atomicos. False caso contrario
 -- DEPRECADO
--- isAtomica :: Operacao -> Bool
--- isAtomica operacao = and [not (elem '(' op) && not (elem ')' op) | op <- (getOperandos operacao)]
-
 isAtomica :: Operacao -> Bool
-isAtomica operacao = (getOperador operacao == "") && (getOperandos operacao == [])
+isAtomica operacao = and [not (elem '(' op) && not (elem ')' op) | op <- (getOperandos operacao)]
+
+-- isAtomica :: Operacao -> Bool
+-- isAtomica operacao = (getOperador operacao == "") && (getOperandos operacao == [])
+
+
+-- getListasPdl :: String -> [String] -> [[String]]
+-- getListasPdl [] listaRotulos = [listaRotulos]
+-- getListasPdl pdl listaRotulos
+--     | elem '(' pdl == False = [[pdl] ++ lista | lista <- listaRotulos]
+--     | otherwise = 
+--         let
+--             operacao = getOperacaoComposta pdl
+--             operador = getOperador operacao
+--             operandos = getOperandos operacao
+
+--         in
+--             if operacao == ";" then
+--                 [[op | op <- opern]]
+
+-- getListasPdl :: String -> [String] -> [[String]]
+-- getListasPdl [] listaRotulos = [listaRotulos]
+-- getListasPdl pdl listaRotulos
+--     | elem '(' pdl == False = [[pdl] ++ lista | lista <- listaRotulos]
+--     | otherwise = 
+--         let
+--             operacao = getOperacaoComposta pdl
+--             operador = getOperador operacao
+--             operandos = getOperandos operacao
+--         in
+--             if operacao == ";" then
+--                 concatMap (\x l -> getListas)
